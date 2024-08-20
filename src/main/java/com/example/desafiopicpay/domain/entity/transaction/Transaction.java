@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 
 @Entity(name="transactions")
 @Table(name="transactions")
@@ -21,8 +22,12 @@ public class Transaction {
     private BigDecimal amount;
 
     @ManyToOne
+    @JoinColumn(name="payer_id")
     private User payer;
 
     @ManyToOne
+    @JoinColumn(name="payee_id")
     private User payee;
+
+    private OffsetDateTime offsetDateTime;
 }
