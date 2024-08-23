@@ -1,6 +1,8 @@
 package com.example.desafiopicpay.domain.entity.user;
 
+import com.example.desafiopicpay.dto.UserDTO;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -34,7 +36,7 @@ public class User {
     @Column(name="cpf_cnpj", unique=true)
     private String cpfCnpj;
 
-    @NotNull @NotBlank
+    @NotNull @NotBlank @Email
     @Column(name="email", unique=true)
     private String email;
 
@@ -50,4 +52,16 @@ public class User {
     @NotNull
     @Enumerated(EnumType.STRING)
     private UserType userType;
+
+    public User(UserDTO userDTO){
+        this.firstName = userDTO.firstName();
+        this.lastName = userDTO.lastName();
+        this.cpfCnpj = userDTO.cpfCnpj();
+        this.email = userDTO.email();
+        this.password = userDTO.password();
+        this.currentBalance = userDTO.currentBalance();
+        this.userType = userDTO.userType();
+    }
+
+
 }
