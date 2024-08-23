@@ -1,6 +1,7 @@
 package com.example.desafiopicpay.controller;
 
 import com.example.desafiopicpay.domain.entity.user.User;
+import com.example.desafiopicpay.dto.UserDTO;
 import com.example.desafiopicpay.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,7 +16,8 @@ public class UserController {
     UserService userService;
 
     @PostMapping()
-    public User createUser(@RequestBody User user){
-        return userService.createUser(user);
+    public void createUser(@RequestBody UserDTO userDTO){
+        userService.createUser(userDTO);
+        return;
     }
 }
