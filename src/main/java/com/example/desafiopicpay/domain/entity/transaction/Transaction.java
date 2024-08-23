@@ -17,8 +17,10 @@ import java.time.OffsetDateTime;
 public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="id")
     private Long id;
 
+    @Column(name="amount")
     private BigDecimal amount;
 
     @ManyToOne
@@ -29,5 +31,6 @@ public class Transaction {
     @JoinColumn(name="payee_id")
     private User payee;
 
-    private OffsetDateTime offsetDateTime;
+    @Column(name="transaction_date")
+    private OffsetDateTime transactionDateTime;
 }
