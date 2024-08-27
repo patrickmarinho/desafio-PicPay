@@ -59,6 +59,10 @@ public class TransactionService {
             return false;
         }
 
+        if(transactionDTO.amount().compareTo(BigDecimal.ZERO) <=0){
+            return false;
+        }
+
         if(payer.getUserType() == UserType.SHOPKEEPER){
             return false;
         }
