@@ -23,7 +23,9 @@ Este projeto consiste em uma API RESTful desenvolvida em Java com Spring Boot. A
 1. Clone o repositório:
 
 ```bash
+
 git clone https://github.com/patrickmarinho/desafio-PicPay.git
+
 ```
 
 2. Instale as dependências com o Maven
@@ -56,7 +58,6 @@ Recebe os parâmetros no seguinte formato JSON:
 	"currentBalance": 100,
 	"userType": "COMMON"
 }
-``
 
 ```
 | Parâmetro | Tipo            | Descrição                                                              |
@@ -94,7 +95,7 @@ Recebe os parâmetros no seguinte formato JSON:
 	"payerID": 15,
 	"payeeID": 10
 }
-``
+
 
 ```
 | Parâmetro | Tipo            | Descrição                                                              |
