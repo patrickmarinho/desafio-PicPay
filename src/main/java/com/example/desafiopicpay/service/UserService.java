@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 @Service
@@ -26,8 +27,11 @@ public class UserService {
             User user = new User(userDTO);
             user.setCpfCnpj(encodedCpfCnpj);
             user.setPassword(encodedPassword);
-            userRepository.save(user);
 
+            if(userDTO.currentBalance().compareTo(BigDecimal.valueOf(0)) < 0){
+                throw new RuntimeException("erro valor negativo");
+            }
+            userRepository.save(user);
         } else {
 
             //TROCAR EXCEPTION
