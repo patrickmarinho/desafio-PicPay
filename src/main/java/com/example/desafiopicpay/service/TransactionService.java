@@ -5,9 +5,11 @@ import com.example.desafiopicpay.domain.entity.user.User;
 import com.example.desafiopicpay.domain.entity.user.UserType;
 import com.example.desafiopicpay.dto.EmailDTO;
 import com.example.desafiopicpay.dto.TransactionDTO;
+import com.example.desafiopicpay.exceptions.*;
 import com.example.desafiopicpay.repository.TransactionRepository;
 import com.example.desafiopicpay.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -31,10 +33,7 @@ public class TransactionService {
     //Post
     public TransactionDTO executeTransaction(TransactionDTO transactionDTO){
 
-        boolean isValid = validateTransaction(transactionDTO);
-        if(!isValid){
-            throw new RuntimeException(); // change later
-        }
+        validateTransaction(transactionDTO);
 
         User payer = userRepository.findUserById(transactionDTO.payerID());
         User payee = userRepository.findUserById(transactionDTO.payeeID());
@@ -48,30 +47,34 @@ public class TransactionService {
         return transactionDTO;
     }
 
-    private boolean validateTransaction(TransactionDTO transactionDTO){
+    private void validateTransaction(TransactionDTO transactionDTO){
         User payer = userRepository.findUserById(transactionDTO.payerID());
 
         if(payer.getCurrentBalance().compareTo(BigDecimal.ZERO) <= 0){
-            return false;
+            throw new PayerInsufficientBalanceException();
+        }
+
+        if(transactionDTO.payerID() == transactionDTO.payeeID()){
+            throw new PayerAndPayeeCannotBeTheSameException();
         }
 
         if(payer.getCurrentBalance().compareTo(transactionDTO.amount()) < 0){
-            return false;
+            throw new PayerInsufficientBalanceException();
         }
 
         if(transactionDTO.amount().compareTo(BigDecimal.ZERO) <=0){
-            return false;
+            throw new InvalidTransactionAmount();
         }
 
         if(payer.getUserType() == UserType.SHOPKEEPER){
-            return false;
+            throw new ShopkeeperInvalidTransactionException();
         }
 
         boolean isAuthorized = authorizationService.authorizeTransaction();
         if(!isAuthorized){
-            return false;
+            throw new TransactionNotAuthorizedException();
         }
-        return true;
+
     }
 
     private void updateBalances(User payer, User payee, BigDecimal amount) {
@@ -84,7 +87,7 @@ public class TransactionService {
 
         boolean payeeReceivedNotification = notificationService.sendNotification(payeeNotification);
         if(!payeeReceivedNotification){
-            throw new RuntimeException(); // change later
+            throw new UnavailableServiceException(); // change later
         }
 
         userRepository.save(payer);

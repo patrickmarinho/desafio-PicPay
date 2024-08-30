@@ -2,6 +2,8 @@ package com.example.desafiopicpay.service;
 
 import com.example.desafiopicpay.domain.entity.user.User;
 import com.example.desafiopicpay.dto.UserDTO;
+import com.example.desafiopicpay.exceptions.UserAlreadyExistsException;
+import com.example.desafiopicpay.exceptions.UserNegativeBalanceException;
 import com.example.desafiopicpay.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -29,17 +31,11 @@ public class UserService {
             user.setPassword(encodedPassword);
 
             if(userDTO.currentBalance().compareTo(BigDecimal.valueOf(0)) < 0){
-                throw new RuntimeException("erro valor negativo");
+                throw new UserNegativeBalanceException();
             }
             userRepository.save(user);
         } else {
-
-            //TROCAR EXCEPTION
-            throw new RuntimeException();
-
+            throw new UserAlreadyExistsException();
         }
-
-        //ALTERAR PRA VOID
-        return;
     }
 }
